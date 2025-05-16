@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class reviews extends Model
+class Review extends Model
 {
+    use HasFactory;
     protected $fillable = [
         'bid_id',
         'reviewer_id',
@@ -15,7 +17,7 @@ class reviews extends Model
 
     public function bid()
     {
-        return $this->belongsTo(Bid::class);
+        return $this->belongsTo(Bid::class , 'bid_id');
     }
     public function reviewer()
     {

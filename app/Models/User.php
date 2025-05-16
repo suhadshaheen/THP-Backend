@@ -12,12 +12,12 @@ class User extends Authenticatable
 
     public function role()
     {
-        return $this->belongsTo(Role::class);
+        return $this->belongsTo(Role::class , 'role_id');
     }
 
     public function bids()
     {
-        return $this->hasMany(Bid::class);
+        return $this->hasMany(Bid::class , 'Freelancer_id');
     }
 
     public function sentMessages()
@@ -31,7 +31,7 @@ class User extends Authenticatable
     }
     public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->hasMany(Notification::class );
     }
     public function reviews()
     {
@@ -40,11 +40,11 @@ class User extends Authenticatable
 
     public function jobs()
     {
-        return $this->hasMany(Job::class);
+        return $this->hasMany(Job::class , 'job_owner_id');
     }
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class );
     }
 
     protected $fillable = [
@@ -53,8 +53,8 @@ class User extends Authenticatable
         'password',
         'role_id',
         'phone',
-        'address',
-        'username',
+        'Address',
+        'UserName',
     ];
 
     protected $hidden = [

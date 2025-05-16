@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->string('title');
             $table->text('description');
-            $table->enum('status', ['pending', 'in_progress,', 'completed'])->default('pending');
+           $table->enum('status', ['pending', 'in_progress', 'completed'])->default('pending');
             $table->foreignId('job_owner_id')->constrained('users')->onDelete('cascade');
             $table->string('location');
             $table->string('category');

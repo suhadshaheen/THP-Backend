@@ -10,6 +10,8 @@ class Job extends Model
     use HasFactory;
 
     protected $fillable = [
+        'attempts',
+        'available_at',
         'title',
         'description',
         'status',
@@ -20,6 +22,7 @@ class Job extends Model
         'posting_date',
         'job_owner_id',
         'JobPhoto',
+        'budget',
     ];
 
     public function user()

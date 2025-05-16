@@ -17,16 +17,16 @@ class Role extends Model
         'name',
     ];
 
-    // public function isAdmin()
-    // {
-    //     return $this->name === 'admin';
-    // }
-    // public function isFreelancer()
-    // {
-    //     return $this->name === 'freelancer';
-    // }
-    // public function isJobOwner()
-    // {
-    //     return $this->name === 'JobOwner';
-    // }
+    public function isAdmin()
+    {
+        return $this->name === 'admin';
+    }
+    public function isFreelancer()
+    {
+        return $this->name === 'freelancer';
+    }
+    public function isJobOwner()
+    {
+        return $this->name === 'JobOwner';
+    }
 }

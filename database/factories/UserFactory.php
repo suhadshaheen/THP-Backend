@@ -23,13 +23,25 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        //   for ($i = 0; $i < 10; $i++) {
+        //     $this->hasAttached(
+        //         Role,
+        //         ['role_id' => $i],
+        //         'roles'
+        //     );
+        // }
         return [
             'name' => fake()->name(),
-            'email' => fake()->unique()->safeEmail(),
+            'email' => fake()->unique()->email(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            'phone' => fake()->phoneNumber(),
+            'Address' => fake()->Address(),
+            'role_id' => fake()->numberBetween(1, 3),
+            'UserName' => fake()->UserName(),
         ];
+
     }
 
     /**

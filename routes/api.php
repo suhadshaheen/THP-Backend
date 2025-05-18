@@ -1,12 +1,15 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BidController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\JobController;
-Route::get('/test', function () {
-    return response()->json(['hello' => 'API is working!']);
-});
+
+Route::get('/user', function (Request $request) {
+    return $request->user();
+})->middleware('auth:sanctum');
+
 
 Route::get('/bids', [BidController::class, 'index']);
 Route::post('/bids', [BidController::class, 'store']);

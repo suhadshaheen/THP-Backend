@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Bid; // Assuming you have a Bid model
+use App\Models\Bid;
 
 class BidController extends Controller
 {
@@ -24,7 +24,17 @@ class BidController extends Controller
      */
     public function store(Request $request)
     {
-        //
+         $validated = $request->validate([
+            'job_id' => 'required|exists:jobs,id',
+            'Freelancer_id' => 'required|exists:users,id',
+            'bid_amount' => 'required|integer|min:1',
+            'work_time_line' => 'required|string',
+            'status' => 'in:pending,accepted,rejected'
+        ]);
+
+        $bid = Bid::create($validated);
+
+        return response()->json($bid, 201);
     }
 
     /**
@@ -32,7 +42,11 @@ class BidController extends Controller
      */
     public function show(string $id)
     {
-        //
+          $bid = Bid::find($id);
+        if (!$bid) {
+            return response()->json(['message' => 'Bid not found'], 404);
+        }
+        return response()->json($bid);
     }
 
     /**
@@ -40,14 +54,41 @@ class BidController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+          $bid = Bid::find($id);
+        if (!$bid) {
+            return response()->json(['message' => 'Bid not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'bid_amount' => 'sometimes|integer|min:1',
+            'work_time_line' => 'sometimes|string',
+            'status' => 'sometimes|in:pending,accepted,rejected'
+        ]);
+
+        $bid->update($validated);
+
+        return response()->json($bid);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
+   public function destroy(Request $request, string $id)
+{
+    $bid = Bid::find($id);
+    if (!$bid) {
+        return response()->json(['message' => 'Bid not found'], 404);
     }
+
+    $jobOwnerId = $bid->job->user_id;
+
+    if ($request->input('job_owner_id') != $jobOwnerId) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $bid->delete();
+
+    return response()->json(['message' => 'Bid deleted']);
+}
+
 }

@@ -73,7 +73,7 @@ class BidController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-   public function destroy(Request $request, string $id)
+   public function destroy(Request $request, $id)
 {
     $bid = Bid::find($id);
     if (!$bid) {

@@ -28,6 +28,18 @@ Route::get('/messages/recent/{userId}', [MessageController::class, 'recentChats'
 Route::get('/jobs', [JobController::class, 'index']);
 Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+
+
+
+
+
+//(Sarah profile)
+
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
+    Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
+    Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
+
+
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
 Route::post('/logout',[AuthController::class, 'logout']);
@@ -37,3 +49,4 @@ Route::put('/users/{id}', [UserController::class, 'update']);
 Route::delete('/users/{id}', [UserController::class, 'destroy']);
 Route::get('/role', [RoleController::class, 'index']);
 Route::get('/role/{id}', [RoleController::class, 'show']);
+

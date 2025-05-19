@@ -24,3 +24,13 @@ Route::put('/messages/{id}', [MessageController::class, 'update']);
 Route::get('/jobs', [JobController::class, 'index']);
 Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+
+
+
+
+//(Sarah profile)
+
+    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
+    Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
+    Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
+

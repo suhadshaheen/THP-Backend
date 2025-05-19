@@ -93,4 +93,26 @@ class MessageController extends Controller
         $message->delete();
         return response()->json(['message' => 'Message deleted']);
     }
+    public function recentChats($userId)
+{
+    $messages = Message::where('sender_id', $userId)
+        ->orWhere('receiver_id', $userId)
+        ->orderBy('TimeForMessage', 'desc')
+        ->get();
+
+    $chatPartners = [];
+    $recentChats = [];
+
+    foreach ($messages as $message) {
+        $partnerId = $message->sender_id == $userId ? $message->receiver_id : $message->sender_id;
+
+        if (!isset($chatPartners[$partnerId])) {
+            $chatPartners[$partnerId] = true;
+            $recentChats[] = $message;
+        }
+    }
+
+    return response()->json($recentChats);
+}
+
 }

@@ -22,6 +22,7 @@ Route::post('/messages', [MessageController::class, 'store']);
 Route::get('/messages/{id}', [MessageController::class, 'show']);
 Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 Route::put('/messages/{id}', [MessageController::class, 'update']);
+Route::get('/messages/recent/{userId}', [MessageController::class, 'recentChats']);
 Route::get('/jobs', [JobController::class, 'index']);
 Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);

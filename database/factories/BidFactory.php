@@ -22,6 +22,7 @@ class BidFactory extends Factory
             'work_time_line' => fake()->dateTimeBetween('now', '+1 month'),
             'job_id' => fake()->numberBetween(1, 20),
             'Freelancer_id' =>User::where('role_id', 2)->inRandomOrder()->first()?->id,
+            'Bid_Date' => fake()->dateTimeBetween('-1 month', 'now'),
             'status' => fake()->randomElement(['pending', 'accepted', 'rejected']),
         ];
     }

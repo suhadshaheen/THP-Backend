@@ -26,7 +26,7 @@ class Bid extends Model
         'work_time_line',
         'job_id',
         'Freelancer_id',
-
+        'Bid_Date',
         'status',
     ];
 }

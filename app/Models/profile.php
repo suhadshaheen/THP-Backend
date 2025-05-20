@@ -12,6 +12,9 @@ class Profile extends Model
         'user_id',
         'User_photo',
         'bio',
+        'whatsappNumber',
+        'InstagramLink',
+        'FacebookLink',
         'skills',
      ];
 

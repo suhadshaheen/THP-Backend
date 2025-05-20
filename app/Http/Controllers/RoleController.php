@@ -10,7 +10,7 @@ class RoleController extends Controller
     public function index(){
         return response()->json(Role::all());
     }
-    public function show(Request $id){
+    public function show($id){
         $role = Role::find($id);
         if(!$role){
             return response()->json(['error' => 'Role not found'], 404);

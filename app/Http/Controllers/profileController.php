@@ -8,23 +8,21 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    // Update Profile Photo
+    
     public function updatePhoto(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $user = auth()->user();
-        $profile = $user->profile ?? $user->profile()->create();
+        $profile = Profile::firstOrCreate(['user_id' => $request->user_id]);
 
-        $photoPath = $request->file('photo')->store('profile_photos', 'public');
-
-       
         if ($profile->photo) {
             Storage::disk('public')->delete($profile->photo);
         }
 
+        $photoPath = $request->file('photo')->store('profile_photos', 'public');
         $profile->photo = $photoPath;
         $profile->save();
 
@@ -34,15 +32,15 @@ class ProfileController extends Controller
         ]);
     }
 
-   
+  
     public function updateBio(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'bio' => 'required|string|max:500',
         ]);
 
-        $user = auth()->user();
-        $profile = $user->profile ?? $user->profile()->create();
+        $profile = Profile::firstOrCreate(['user_id' => $request->user_id]);
         $profile->bio = $request->bio;
         $profile->save();
 
@@ -52,17 +50,14 @@ class ProfileController extends Controller
         ]);
     }
 
-    
-  
-
     public function updateSkills(Request $request)
     {
         $request->validate([
+            'user_id' => 'required|exists:users,id',
             'skills' => 'required|string|max:500',
         ]);
 
-        $user = auth()->user();
-        $profile = $user->profile ?? $user->profile()->create();
+        $profile = Profile::firstOrCreate(['user_id' => $request->user_id]);
         $profile->skills = $request->skills;
         $profile->save();
 
@@ -72,25 +67,20 @@ class ProfileController extends Controller
         ]);
     }
 
+    // public function updateInstagram(Request $request)
+    // {
+    //     $request->validate([
+    //         'user_id' => 'required|exists:users,id',
+    //         'instagram_link' => 'required|url|max:255',
+    //     ]);
 
+    //     $profile = Profile::firstOrCreate(['user_id' => $request->user_id]);
+    //     $profile->instagram_link = $request->instagram_link;
+    //     $profile->save();
 
-
-// public function updateInstagram(Request $request)
-// {
-//     $request->validate([
-//         'instagram_link' => 'required|url|max:255',
-//     ]);
-
-//     $user = auth()->user();
-//     $profile = $user->profile ?? $user->profile()->create();
-//     $profile->instagram_link = $request->instagram_link;
-//     $profile->save();
-
-//     return response()->json([
-//         'message' => 'Instagram link updated successfully',
-//         'instagram_link' => $profile->instagram_link
-//     ]);
-// }
-
-
- }
+    //     return response()->json([
+    //         'message' => 'Instagram link updated successfully',
+    //         'instagram_link' => $profile->instagram_link
+    //     ]);
+    // }
+}

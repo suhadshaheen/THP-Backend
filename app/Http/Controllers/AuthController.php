@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
@@ -36,22 +37,32 @@ class AuthController extends Controller
         return response()->json(['message' => 'User registered'], 201);
     }
     public function login(Request $request){
-        $validated  = $request->validate([
+        $credentials = $request->validate([
             'username' => 'required',
             'password' => 'required',
         ]);
-        if(Auth::attempt($validated)){
-            $request->session()->regenerate();
-            return response()->json(['message' => ' logged in successfully.'], 200);
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        return response()->json([
+            'message' => 'Logged in successfully',
+            'token' => $token,
+            'user' => Auth::user()
+        ], 200);
 
     }
-    public function logout(Request $request){
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return response()->json(['message' => ' logged out successfully.'], 200);
-
+    public function logout()
+    {
+        try {
+            JWTAuth::invalidate(JWTAuth::getToken());
+            return response()->json(['message' => 'Logged out successfully']);
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return response()->json(['error' => 'Failed to logout, token invalid'], 500);
+        }
     }
+    public function me()
+    {
+        return response()->json(Auth::user());
+    }
+
 }

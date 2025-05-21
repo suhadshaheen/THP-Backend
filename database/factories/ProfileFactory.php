@@ -20,11 +20,15 @@ class ProfileFactory extends Factory
             'user_id' => fake()->numberBetween(1, 20),
             'User_Photo' => fake()->imageUrl(640, 480, 'people', true),
             'bio' => fake()->text(),
+            'whatsappNumber' => fake()->phoneNumber(),
+            'InstagramLink' => fake()->url(),
+            'FacebookLink' => fake()->url(),
             'skills' => json_encode([
                 'skill1' => fake()->word(),
                 'skill2' => fake()->word(),
                 'skill3' => fake()->word(),
             ]),
+
 
         ];
     }

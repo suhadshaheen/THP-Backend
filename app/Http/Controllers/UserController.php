@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Bid;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+
 
 class UserController extends Controller
 {
@@ -46,4 +48,14 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully.'], 200);
 
     }
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims(): array
+    {
+        return [];
+    }
+
 }

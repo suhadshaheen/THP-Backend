@@ -7,6 +7,71 @@ use App\Models\Job;
 
 class JobController extends Controller
 {
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'location' => 'required|string',
+            'category' => 'required|string',
+            'job_requirements' => 'nullable|string',
+            'deadline' => 'nullable|date',
+            'posting_date' => 'nullable|date',
+            'job_owner_id' => 'required|exists:users,id',
+            'JobPhoto' => 'nullable|string',
+            'budget' => 'required|numeric',
+            'attempts' => 'nullable|integer',
+            'available_at' => 'nullable|date',
+        ]);
+
+        $job = Job::create($validated);
+
+        return response()->json($job, 201);
+    } 
+
+
+    public function update(Request $request, $id)
+    {
+        $job = Job::find($id);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'status' => 'nullable|in:pending,in_progress,completed',
+            'location' => 'required|string',
+            'category' => 'required|string',
+            'job_requirements' => 'nullable|string',
+            'deadline' => 'nullable|date',
+            'posting_date' => 'nullable|date',
+            'job_owner_id' => 'required|exists:users,id',
+            'JobPhoto' => 'nullable|string',
+            'budget' => 'required|numeric',
+            'attempts' => 'nullable|integer',
+            'available_at' => 'nullable|date',
+        ]);
+
+        $job->update($validated);
+
+        return response()->json($job);
+    }
+  
+
+    public function destroy($id)
+    {
+        $job = Job::find($id);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $job->delete();
+
+        return response()->json(['message' => 'Job deleted successfully']);
+    }
+
     public function index(Request $request)
     {
         $query = Job::query();

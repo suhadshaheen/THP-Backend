@@ -55,3 +55,9 @@ Route::delete('/users/{id}', [UserController::class, 'destroy']);
 Route::get('/role', [RoleController::class, 'index']);
 Route::get('/role/{id}', [RoleController::class, 'show']);
 
+
+
+Route::post('/jobs', [JobController::class, 'store']);     
+Route::put('/jobs/{id}', [JobController::class, 'update']); 
+Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
+Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);

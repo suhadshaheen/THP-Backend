@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Job;
+use App\Models\User;
+use App\Models\Role;
+use Illuminate\Http\Request;
+
+class AdminController extends Controller
+{
+    public function dashboardSummary()
+    {
+        return response()->json([
+            'job_requests' => \App\Models\JobRequest::count(),
+            'approved_artisans' => User::whereHas('role', function ($query) {
+                $query->where('name', 'freelancer');
+            })->where('status', 'approved')->count(),
+            'platform_earnings' => 12340, 
+            'site_visits' => 3200, 
+        ]);
+    }
+
+    // tables
+    public function getRecentJobs()
+    {
+        return response()->json(Job::latest()->take(5)->get());
+    }
+
+    public function getRecentArtisans()
+    {
+        $recentArtisans = User::whereHas('role', function ($query) {
+            $query->where('name', 'freelancer');
+        })->latest()->take(5)->get();
+
+        return response()->json($recentArtisans);
+    }
+
+    // artisans
+    public function index()
+    {
+        $artisans = User::whereHas('role', function ($query) {
+            $query->where('name', 'freelancer');
+        })->get();
+
+        return response()->json([
+            'status' => true,
+            'data' => $artisans
+        ]);
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,rejected,pending'
+        ]);
+
+        $artisan = User::whereHas('role', function ($query) {
+            $query->where('name', 'freelancer');
+        })->findOrFail($id);
+
+        $artisan->status = $request->status;
+        $artisan->save();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Status updated successfully'
+        ]);
+    }
+
+    public function destroy($id)
+    {
+        $artisan = User::whereHas('role', function ($query) {
+            $query->where('name', 'freelancer');
+        })->findOrFail($id);
+
+        $artisan->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Artisan deleted successfully'
+        ]);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+
+        $results = User::whereHas('role', function ($q) {
+            $q->where('name', 'freelancer');
+        })->where(function ($q) use ($query) {
+            $q->where('name', 'like', "%$query%")
+              ->orWhere('skill', 'like', "%$query%");
+        })->get();
+
+        return response()->json([
+            'status' => true,
+            'results' => $results
+        ]);
+    }
+
+    // jobs
+    public function listJobs()
+    {
+        $jobs = Job::all();
+        return response()->json($jobs);
+    }
+
+    public function showJob($id)
+    {
+        return response()->json(Job::findOrFail($id));
+    }
+
+    public function updateJobStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        $job = Job::findOrFail($id);
+        $job->status = $request->status;
+        $job->save();
+
+        return response()->json(['message' => 'Job status updated']);
+    }
+
+    public function deleteJob($id)
+    {
+        Job::destroy($id);
+        return response()->json(['message' => 'Job deleted']);
+    }
+}

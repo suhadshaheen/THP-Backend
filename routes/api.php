@@ -8,8 +8,7 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\JobController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
-
-
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 
 
@@ -38,11 +37,30 @@ Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
 
 
 
-//(Sarah profile)
+//(sarah profile)
+Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
+Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
+Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
+//( sarah admin)
+Route::get('/admin/dashboard/summary', [AdminController::class, 'dashboardSummary']);
 
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
-    Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
-    Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
+Route::get('/admin/dashboard/recent-jobs', [AdminController::class, 'getRecentJobs']);
+Route::get('/admin/dashboard/recent-artisans', [AdminController::class, 'getRecentArtisans']);
+
+Route::get('/admin/artisans', [AdminController::class, 'index']);
+Route::put('/admin/artisans/{id}/status', [AdminController::class, 'updateStatus']);
+Route::delete('/admin/artisans/{id}', [AdminController::class, 'destroy']);
+Route::get('/admin/artisans/search', [AdminController::class, 'search']); 
+
+Route::get('/admin/jobs', [AdminController::class, 'listJobs']);
+Route::get('/admin/jobs/{id}', [AdminController::class, 'showJob']);
+Route::put('/admin/jobs/{id}/status', [AdminController::class, 'updateJobStatus']);
+Route::delete('/admin/jobs/{id}', [AdminController::class, 'deleteJob']);
+
+
+
+
+
 
 
 Route::post('/register', [AuthController::class, 'register']);

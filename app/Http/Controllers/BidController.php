@@ -91,4 +91,11 @@ class BidController extends Controller
     return response()->json(['message' => 'Bid deleted']);
 }
 
+public function getBidsForJob($jobId)
+{
+    $bids = Bid::where('job_id', $jobId)->get();
+
+    return response()->json($bids);
+}
+
 }

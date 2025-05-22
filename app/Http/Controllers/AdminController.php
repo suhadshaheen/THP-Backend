@@ -12,12 +12,12 @@ class AdminController extends Controller
     public function dashboardSummary()
     {
         return response()->json([
-            'job_requests' => \App\Models\JobRequest::count(),
+            'job_requests' => \App\Models\Job::count(),
             'approved_artisans' => User::whereHas('role', function ($query) {
                 $query->where('name', 'freelancer');
             })->where('status', 'approved')->count(),
-            'platform_earnings' => 12340, 
-            'site_visits' => 3200, 
+            'platform_earnings' => 12340,
+            'site_visits' => 3200,
         ]);
     }
 

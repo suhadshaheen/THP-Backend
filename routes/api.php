@@ -15,7 +15,7 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth:api');
 
 //edit
 Route::get('/bids', [BidController::class, 'index']);
@@ -53,7 +53,6 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::get('/users/{id}', [UserController::class, 'show']);
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{id}', [JobController::class, 'update']);
-    Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
     Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);
 });
 
@@ -75,7 +74,6 @@ Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
     Route::get('/admin/jobs/{id}', [AdminController::class, 'showJob']);
     Route::put('/admin/jobs/{id}/status', [AdminController::class, 'updateJobStatus']);
     Route::delete('/admin/jobs/{id}', [AdminController::class, 'deleteJob']);
-    Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
     Route::get('/users', [UserController::class, 'index']);
 
 });
@@ -100,4 +98,8 @@ Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::post('/messages', [MessageController::class, 'store']);//j,f
     Route::get('/messages/{id}', [MessageController::class, 'show']);//j,f
     Route::get('/messages/recent/{userId}', [MessageController::class, 'recentChats']);//j,f
+});
+//admin,job owner
+Route::middleware(['auth:api','role:Admin,JobOwner'])->group(function () {
+      Route::delete('/jobs/{id}', [JobController::class, 'destroy']);
 });

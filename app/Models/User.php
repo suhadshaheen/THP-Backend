@@ -5,47 +5,32 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    public function role()
+    // ✅ JWT methods
+    public function getJWTIdentifier()
     {
-        return $this->belongsTo(Role::class , 'role_id');
+        return $this->getKey(); // يرجّع الـ id الخاص بالمستخدم
     }
 
-    public function bids()
+    public function getJWTCustomClaims(): array
     {
-        return $this->hasMany(Bid::class , 'Freelancer_id');
+        return []; // ممكن تحطي بيانات إضافية في التوكن لو حبيتي
     }
 
-    public function sentMessages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
-    public function receivedMessages()
-    {
-        return $this->hasMany(Message::class, 'receiver_id');
-    }
-    public function notifications()
-    {
-        return $this->hasMany(Notification::class );
-    }
-    public function reviews()
-    {
-        return $this->hasMany(Review::class, 'reviewer_id');
-    }
-
-    public function jobs()
-    {
-        return $this->hasMany(Job::class , 'job_owner_id');
-    }
-    public function profile()
-    {
-        return $this->hasOne(Profile::class );
-    }
+    // ✅ علاقاتك كلها تمام:
+    public function role() { return $this->belongsTo(Role::class , 'role_id'); }
+    public function bids() { return $this->hasMany(Bid::class , 'Freelancer_id'); }
+    public function sentMessages() { return $this->hasMany(Message::class, 'sender_id'); }
+    public function receivedMessages() { return $this->hasMany(Message::class, 'receiver_id'); }
+    public function notifications() { return $this->hasMany(Notification::class ); }
+    public function reviews() { return $this->hasMany(Review::class, 'reviewer_id'); }
+    public function jobs() { return $this->hasMany(Job::class , 'job_owner_id'); }
+    public function profile() { return $this->hasOne(Profile::class ); }
 
     protected $fillable = [
         'name',

@@ -4,23 +4,27 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\RoleController;
+
 class RoleMiddleware
 {
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param  string  $roles  (Comma-separated roles: "Admin,Freelancer,...")
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next , $roles): Response
+    public function handle(Request $request, Closure $next, $roles)
     {
-        $user = Auth::user();
-        $allowedRoles = explode('|', $roles);
-        if(!$user || !in_array($user->role,$roles )){
-            return response() -> json(['error' => 'Unauthorized'], 401);
+        $user = auth('api')->user();
+
+        $allowedRoles = explode(',', $roles);
+
+        if (!$user || !$user->role || !in_array($user->role->name, $allowedRoles)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
+
         return $next($request);
     }
 }

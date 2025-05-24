@@ -32,14 +32,17 @@ class User extends Authenticatable implements JWTSubject
     public function profile() { return $this->hasOne(Profile::class ); }
 
     protected $fillable = [
-        'name',
+        'firstname',
+        'lastname',
         'email',
         'password',
         'role_id',
         'phone',
-        'Address',
-        'UserName',
+        'city',
+        'country',
+        'username',
     ];
+
 
     protected $hidden = [
         'password',
@@ -53,4 +56,5 @@ class User extends Authenticatable implements JWTSubject
             'password' => 'hashed',
         ];
     }
+
 }

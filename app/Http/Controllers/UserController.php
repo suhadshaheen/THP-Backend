@@ -34,6 +34,7 @@ class UserController extends Controller
             'phone' => 'required',
             'city' => 'required',
             'country' => 'required',
+            'role',
 
         ]);
         $user->update($validatedData);
@@ -56,6 +57,10 @@ class UserController extends Controller
     public function getJWTCustomClaims(): array
     {
         return [];
+    }
+    public function username()
+    {
+        return 'username';
     }
 
 }

@@ -31,15 +31,16 @@ class UserFactory extends Factory
         //     );
         // }
         return [
-            'name' => fake()->name(),
-            'email' => fake()->unique()->email(),
-            'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
-            'remember_token' => Str::random(10),
-            'phone' => fake()->phoneNumber(),
-            'Address' => fake()->Address(),
+            'firstname' => $this->faker->firstName(),
+            'lastname' => $this->faker->lastName(),
+            'username' => $this->faker->unique()->userName(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => bcrypt('password'),
+            'phone' => $this->faker->phoneNumber(),
+            'city' => $this->faker->city(),
+            'country' => $this->faker->country(),
             'role_id' => fake()->numberBetween(1, 3),
-            'UserName' => fake()->UserName(),
+
         ];
 
     }

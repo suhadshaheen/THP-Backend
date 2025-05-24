@@ -16,9 +16,7 @@ return new class extends Migration
                 $table->string('phone')->unique;
             }
 
-            if (!Schema::hasColumn('users', 'Address')) {
-                $table->string('Address');
-            }
+
 
             if (!Schema::hasColumn('users', 'role_id')) {
                 $table->foreignId('role_id')->constrained('roles');
@@ -41,9 +39,6 @@ return new class extends Migration
                 $table->dropColumn('phone');
             }
 
-            if (Schema::hasColumn('users', 'Address')) {
-                $table->dropColumn('Address');
-            }
 
             if (Schema::hasColumn('users', 'role_id')) {
                 $table->dropForeign(['role_id']);

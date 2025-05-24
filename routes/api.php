@@ -18,7 +18,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 //edit
-Route::get('/bids', [BidController::class, 'index']);
 //Route::get('/role', [RoleController::class, 'index']);
 //Route::get('/role/{id}', [RoleController::class, 'show']);
 //Route::get('/bids/{id}', [BidController::class, 'show']);
@@ -41,11 +40,11 @@ Route::middleware(['auth:api'])->group(function () {
 //freelancer
 Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
     Route::post('/bids', [BidController::class, 'store']);
-    Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+    Route::get('/bids', [BidController::class, 'index']);
+    Route::get('/messages', [MessageController::class, 'index']);//j,f
+
 
 });
-
-
 
 //job owner
 Route::middleware(['auth:api','role:JobOwner'])->group(function () {
@@ -54,11 +53,8 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{id}', [JobController::class, 'update']);
     Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);
+     Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
 });
-
-
-
-
 
 //admin
 Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
@@ -78,9 +74,11 @@ Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
 
 });
 
-//
+//anyone
+Route::get('/jobs', [JobController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
+//
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -89,7 +87,6 @@ Route::middleware('auth:api')->group(function () {
 //admin,freelancer
 Route::middleware(['auth:api','role:Admin,FreeLancer'])->group(function () {
     Route::get('/jobs/{id}', [JobController::class, 'show']);
-    Route::get('/jobs', [JobController::class, 'index']);
 });
 
 //Job owner, freelancer

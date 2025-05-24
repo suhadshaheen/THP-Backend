@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -22,6 +23,7 @@ class AuthController extends Controller
             'username' => 'required|unique:users',
             'role' => 'required',
         ]);
+        $roleId = Role::where('name', $validated['role'])->first()?->id;
         $user = User::create([
             'firstname' => $validated['firstname'],
             'lastname' => $validated['lastname'],
@@ -31,7 +33,7 @@ class AuthController extends Controller
             'city' => $validated['city'],
             'country' => $validated['country'],
             'username' => $validated['username'],
-            'role' => $validated['role'],
+            'role_id' => $roleId,
 
         ]);
         return response()->json(['message' => 'User registered'], 201);
@@ -41,15 +43,24 @@ class AuthController extends Controller
             'username' => 'required',
             'password' => 'required',
         ]);
+
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
-        return response()->json([
-            'message' => 'Logged in successfully',
-            'token' => $token,
-            'user' => Auth::user()
-        ], 200);
 
+        $user = JWTAuth::user()->load('role');
+
+
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user' => [
+                'id' => $user->id,
+                'username' => $user->username,
+                'role' => $user->role?->name ?? null
+            ]
+        ]);
     }
     public function logout()
     {

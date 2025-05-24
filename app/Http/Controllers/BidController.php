@@ -4,59 +4,59 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Bid;
-
+use App\Models\Job;
+use Illuminate\Support\Facades\Auth;
+//1
 class BidController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        // Fetch all bids from the database
-        $bids = Bid::all();
+        $userId = Auth::user()->id;
+        $bids = Bid::where('Freelancer_id', $userId)->get();
 
-        // Return the bids as a JSON response
         return response()->json($bids);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-         $validated = $request->validate([
+        $userId = Auth::user()->id;
+        $validated = $request->validate([
             'job_id' => 'required|exists:jobs,id',
-            'Freelancer_id' => 'required|exists:users,id',
             'bid_amount' => 'required|integer|min:1',
             'work_time_line' => 'required|string',
             'status' => 'in:pending,accepted,rejected'
         ]);
+
+        $validated['Freelancer_id'] = $userId;
 
         $bid = Bid::create($validated);
 
         return response()->json($bid, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-          $bid = Bid::find($id);
+        $bid = Bid::find($id);
         if (!$bid) {
             return response()->json(['message' => 'Bid not found'], 404);
         }
+        if ($bid->Freelancer_id != Auth::user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         return response()->json($bid);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-          $bid = Bid::find($id);
+        $bid = Bid::find($id);
         if (!$bid) {
             return response()->json(['message' => 'Bid not found'], 404);
+        }
+
+        if ($bid->Freelancer_id != Auth::user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
         }
 
         $validated = $request->validate([
@@ -70,32 +70,37 @@ class BidController extends Controller
         return response()->json($bid);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-   public function destroy(Request $request, $id)
-{
-    $bid = Bid::find($id);
-    if (!$bid) {
-        return response()->json(['message' => 'Bid not found'], 404);
+    public function destroy(Request $request, $id)
+    {
+        $bid = Bid::find($id);
+        if (!$bid) {
+            return response()->json(['message' => 'Bid not found'], 404);
+        }
+
+        $jobOwnerId = $bid->job->user_id;
+
+        if ($request->input('job_owner_id') != $jobOwnerId) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $bid->delete();
+
+        return response()->json(['message' => 'Bid deleted']);
     }
 
-    $jobOwnerId = $bid->job->user_id;
 
-    if ($request->input('job_owner_id') != $jobOwnerId) {
-        return response()->json(['message' => 'Unauthorized'], 403);
+    public function getBidsForJob($jobId)
+    {
+        $job = Job::find($jobId);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+        if ($job->user_id != Auth::user()->id) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $bids = Bid::where('job_id', $jobId)->get();
+
+        return response()->json($bids);
     }
-
-    $bid->delete();
-
-    return response()->json(['message' => 'Bid deleted']);
-}
-
-public function getBidsForJob($jobId)
-{
-    $bids = Bid::where('job_id', $jobId)->get();
-
-    return response()->json($bids);
-}
-
 }

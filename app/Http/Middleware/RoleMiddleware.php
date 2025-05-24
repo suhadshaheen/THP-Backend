@@ -15,16 +15,15 @@ class RoleMiddleware
      * @param  string  $roles  (Comma-separated roles: "Admin,Freelancer,...")
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, $roles)
-    {
-        $user = auth('api')->user();
+    public function handle(Request $request, Closure $next, ...$roles)
+{
+    $user = auth('api')->user();
 
-        $allowedRoles = explode(',', $roles);
-
-        if (!$user || !$user->role || !in_array($user->role->name, $allowedRoles)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
-        }
-
-        return $next($request);
+    if (!$user || !$user->role || !in_array($user->role->name, $roles)) {
+        return response()->json(['error' => 'Unauthorized'], 401);
     }
+
+    return $next($request);
+}
+
 }

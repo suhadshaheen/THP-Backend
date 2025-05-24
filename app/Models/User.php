@@ -11,18 +11,17 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, Notifiable;
 
-    // ✅ JWT methods
     public function getJWTIdentifier()
     {
-        return $this->getKey(); // يرجّع الـ id الخاص بالمستخدم
+        return $this->getKey();
     }
 
     public function getJWTCustomClaims(): array
     {
-        return []; // ممكن تحطي بيانات إضافية في التوكن لو حبيتي
+        return []; // for custom claims, if needed
     }
 
-    // ✅ علاقاتك كلها تمام:
+
     public function role() { return $this->belongsTo(Role::class , 'role_id'); }
     public function bids() { return $this->hasMany(Bid::class , 'Freelancer_id'); }
     public function sentMessages() { return $this->hasMany(Message::class, 'sender_id'); }

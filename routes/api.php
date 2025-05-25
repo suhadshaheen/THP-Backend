@@ -79,6 +79,9 @@ Route::get('/jobs', [JobController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
  Route::get('/jobs/{id}', [JobController::class, 'show']);
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+
 //
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);

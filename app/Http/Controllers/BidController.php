@@ -29,7 +29,7 @@ class BidController extends Controller
         'work_time_line' => 'required|string',
         'status' => 'in:pending,accepted,rejected'
     ]);
-//
+//ممنوع اكثر من بيد
     $existingBid = Bid::where('Freelancer_id', $userId)->where('job_id', $validated['job_id'])->first();
 
     if ($existingBid) {

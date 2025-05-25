@@ -41,7 +41,6 @@ Route::middleware(['auth:api'])->group(function () {
 Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
     Route::post('/bids', [BidController::class, 'store']);
     Route::get('/bids', [BidController::class, 'index']);
-    Route::get('/messages', [MessageController::class, 'index']);//j,f
 
 
 });
@@ -98,7 +97,7 @@ Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
     Route::get('/messages/{id}', [MessageController::class, 'show']);//j,f
-    Route::get('/messages/recent/{userId}', [MessageController::class, 'recentChats']);//j,f
+    Route::get('/messages/recent', [MessageController::class, 'recentChats']);//j,f
 });
 //admin,job owner
 Route::middleware(['auth:api','role:Admin,JobOwner'])->group(function () {

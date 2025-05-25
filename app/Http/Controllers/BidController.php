@@ -13,27 +13,37 @@ class BidController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-        $bids = Bid::where('Freelancer_id', $userId)->get();
+        $bids = Bid::with('job')->where('Freelancer_id', $userId)->get();
+
 
         return response()->json($bids);
     }
 
-    public function store(Request $request)
-    {
-        $userId = Auth::user()->id;
-        $validated = $request->validate([
-            'job_id' => 'required|exists:jobs,id',
-            'bid_amount' => 'required|integer|min:1',
-            'work_time_line' => 'required|string',
-            'status' => 'in:pending,accepted,rejected'
-        ]);
+  public function store(Request $request)
+{
+    $userId = Auth::user()->id;
 
-        $validated['Freelancer_id'] = $userId;
+    $validated = $request->validate([
+        'job_id' => 'required|exists:jobs,id',
+        'bid_amount' => 'required|integer|min:1',
+        'work_time_line' => 'required|string',
+        'status' => 'in:pending,accepted,rejected'
+    ]);
+//
+    $existingBid = Bid::where('Freelancer_id', $userId)->where('job_id', $validated['job_id'])->first();
 
-        $bid = Bid::create($validated);
-
-        return response()->json($bid, 201);
+    if ($existingBid) {
+        return response()->json([
+            'message' => 'You have already placed a bid on this job.'
+        ], 409); // 409 :Conflict
     }
+
+    $validated['Freelancer_id'] = $userId;
+
+    $bid = Bid::create($validated);
+
+    return response()->json($bid, 201);
+}
 
     public function show(string $id)
     {

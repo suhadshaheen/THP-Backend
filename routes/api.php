@@ -78,16 +78,17 @@ Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
 Route::get('/jobs', [JobController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
+ Route::get('/jobs/{id}', [JobController::class, 'show']);
 //
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-//admin,freelancer
-Route::middleware(['auth:api','role:Admin,FreeLancer'])->group(function () {
-    Route::get('/jobs/{id}', [JobController::class, 'show']);
-});
+// //admin,freelancer
+// Route::middleware(['auth:api','role:Admin,FreeLancer'])->group(function () {
+//     Route::get('/jobs/{id}', [JobController::class, 'show']);
+// });
 
 //Job owner, freelancer
 Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {

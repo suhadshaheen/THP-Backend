@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\User;
 class MessageController extends Controller
 {
 
@@ -50,14 +50,16 @@ class MessageController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            'receiver_id' => 'required|exists:users,id',
-            'content' => 'required|string',
-            'TimeForMessage' => 'required|date',
-        ]);
+    'receiver_id' => 'required|exists:users,id',
+    'content' => 'required|string',
+]);
 
-        $validated['sender_id'] = $userId;
-
-        $message = Message::create($validated);
+$message = Message::create([
+    'sender_id' => $userId,
+    'receiver_id' => $validated['receiver_id'],
+    'content' => $validated['content'],
+    'TimeForMessage' => now(),
+]);
 
         return response()->json($message, 201);
     }
@@ -118,13 +120,13 @@ class MessageController extends Controller
     // }
 
 
-   public function recentMessages()
+  public function recentMessages()
 {
-       $userId = Auth::id(); // أو حسب طريقة المصادقة عندك
+    $userId = Auth::id();
 
     $messages = Message::where('sender_id', $userId)
         ->orWhere('receiver_id', $userId)
-        ->with(['sender', 'receiver'])
+        ->with(['sender.profile', 'receiver.profile'])
         ->orderBy('created_at', 'desc')
         ->get();
 
@@ -132,13 +134,14 @@ class MessageController extends Controller
         return response()->json([]);
     }
 
-    // اختيار آخر رسالة مع كل مستخدم تم التراسل معه
     $recent = $messages->unique(function ($msg) use ($userId) {
+
         return $msg->sender_id == $userId ? $msg->receiver_id : $msg->sender_id;
     })->values();
 
     return response()->json($recent);
 }
+
 
 
 }

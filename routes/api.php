@@ -97,7 +97,7 @@ Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
     Route::get('/messages/{id}', [MessageController::class, 'show']);//j,f
-    Route::get('/messages/recent', [MessageController::class, 'recentChats']);//j,f
+   Route::get('/messages/recent', [MessageController::class, 'recentMessages']);//j,f
 });
 //admin,job owner
 Route::middleware(['auth:api','role:Admin,JobOwner'])->group(function () {

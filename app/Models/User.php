@@ -7,7 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use App\Models\{Role, Bid, Message, Notification, Review, Job, Profile};
-use Laravel\Sanctum\Contracts\HasApiTokens;
+
 
 class User extends Authenticatable implements JWTSubject
 {

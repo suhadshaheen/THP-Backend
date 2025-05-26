@@ -120,26 +120,34 @@ $message = Message::create([
     // }
 
 
-  public function recentMessages()
+ public function recentContacts()
 {
     $userId = Auth::id();
+    $user = Auth::user();
 
     $messages = Message::where('sender_id', $userId)
         ->orWhere('receiver_id', $userId)
-        ->with(['sender.profile', 'receiver.profile'])
-        ->orderBy('created_at', 'desc')
+        ->with(['sender', 'receiver'])
         ->get();
 
     if ($messages->isEmpty()) {
         return response()->json([]);
     }
 
-    $recent = $messages->unique(function ($msg) use ($userId) {
 
+    $contactIds = $messages->map(function ($msg) use ($userId) {
         return $msg->sender_id == $userId ? $msg->receiver_id : $msg->sender_id;
-    })->values();
+    })->unique()->values();
 
-    return response()->json($recent);
+
+    $targetRoleId = $user->role_id == 2 ? 1 : 2;
+
+    $contacts = User::with('profile')
+        ->whereIn('id', $contactIds)
+        ->where('role_id', $targetRoleId)
+        ->get();
+
+    return response()->json($contacts);
 }
 
 

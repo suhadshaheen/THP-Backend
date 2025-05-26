@@ -25,18 +25,6 @@ Route::get('/user', function (Request $request) {
 //Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 //Route::put('/messages/{id}', [MessageController::class, 'update']);
 
-
-//(sarah profile)
-Route::middleware(['auth:api'])->group(function () {
-    Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
-    Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
-    Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
-    Route::put('/users/{id}', [UserController::class, 'update']);
-    Route::delete('/users/{id}', [UserController::class, 'destroy']);
-});
-
-
-
 //freelancer
 Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
     Route::post('/bids', [BidController::class, 'store']);
@@ -81,10 +69,18 @@ Route::post('/login',[AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
+
 //
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+        Route::post('/profile/photo', [ProfileController::class, 'updatePhoto']);
+    Route::post('/profile/bio', [ProfileController::class, 'updateBio']);
+    Route::post('/profile/skills', [ProfileController::class, 'updateSkills']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    Route::post('/profile/social-links', [ProfileController::class, 'updateSocialLinks']);
+
 });
 
 // //admin,freelancer
@@ -96,8 +92,10 @@ Route::middleware('auth:api')->group(function () {
 Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
-    Route::get('/messages/{id}', [MessageController::class, 'show']);//j,f
-Route::get('/messages/recent', [MessageController::class, 'recentMessages']);//j,f
+   Route::get('/messages/Contact', [MessageController::class, 'recentContacts']); // j,f
+   Route::get('/messages/{id}', [MessageController::class, 'show']); // j,f
+
+
 });
 //admin,job owner
 Route::middleware(['auth:api','role:Admin,JobOwner'])->group(function () {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
-    // ProfileController.php
+
 public function updatePhoto(Request $request)
 {
     $request->validate([

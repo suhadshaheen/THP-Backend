@@ -73,9 +73,17 @@ class AuthController extends Controller
             return response()->json(['error' => 'Failed to logout, token invalid'], 500);
         }
     }
-    public function me()
+     public function me()
     {
-        return response()->json(Auth::user());
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+        $user->load('profile');//suhad
+        $user->load('role');
+
+        return response()->json($user);
     }
     public function forgotPassword(Request $request)
     {

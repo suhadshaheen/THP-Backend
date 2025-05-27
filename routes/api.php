@@ -36,7 +36,7 @@ Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
 //job owner
 Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::delete('/bids/{id}', [BidController::class, 'destroy']);
-    Route::get('/users/{id}', [UserController::class, 'show']);
+
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{id}', [JobController::class, 'update']);
     Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);
@@ -80,6 +80,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     Route::post('/profile/social-links', [ProfileController::class, 'updateSocialLinks']);
+       Route::get('/users/{id}', [UserController::class, 'show']);
 
 });
 
@@ -92,6 +93,7 @@ Route::middleware('auth:api')->group(function () {
 Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
+    Route::get('/messages/conversation/{receiver_id}', [MessageController::class, 'getConversationMessages']); // j,f
    Route::get('/messages/Contact', [MessageController::class, 'recentContacts']); // j,f
    Route::get('/messages/{id}', [MessageController::class, 'show']); // j,f
 

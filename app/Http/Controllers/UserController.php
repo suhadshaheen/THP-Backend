@@ -13,11 +13,12 @@ class UserController extends Controller
     public function index(){
         return response()->json(User::all());
     }
-    public function show($id){
+     public function show($id){
         $user = User::find($id);
         if(!$user){
             return response()->json(['message' => 'User not found.'], 404);
         }
+        $user->load('profile');//suhad
         return response()->json($user);
     }
     public function update(Request $request,$id){

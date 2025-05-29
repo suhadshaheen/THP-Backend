@@ -14,7 +14,7 @@ class AdminController extends Controller
         return response()->json([
             'job_requests' => \App\Models\Job::count(),
             'approved_artisans' => User::whereHas('role', function ($query) {
-                $query->where('name', 'freelancer');
+                $query->where('id', '3');
             })->where('status', 'approved')->count(),
             'platform_earnings' => 12340,
             'site_visits' => 3200,
@@ -30,7 +30,7 @@ class AdminController extends Controller
     public function getRecentArtisans()
     {
         $recentArtisans = User::whereHas('role', function ($query) {
-            $query->where('name', 'freelancer');
+            $query->where('id', '3');
         })->latest()->take(5)->get();
 
         return response()->json($recentArtisans);
@@ -40,7 +40,7 @@ class AdminController extends Controller
     public function index()
     {
         $artisans = User::whereHas('role', function ($query) {
-            $query->where('name', 'freelancer');
+            $query->where('id', '3');
         })->get();
 
         return response()->json([
@@ -56,7 +56,7 @@ class AdminController extends Controller
         ]);
 
         $artisan = User::whereHas('role', function ($query) {
-            $query->where('name', 'freelancer');
+            $query->where('id', '3');
         })->findOrFail($id);
 
         $artisan->status = $request->status;
@@ -71,7 +71,7 @@ class AdminController extends Controller
     public function destroy($id)
     {
         $artisan = User::whereHas('role', function ($query) {
-            $query->where('name', 'freelancer');
+            $query->where('id', '3');
         })->findOrFail($id);
 
         $artisan->delete();
@@ -87,10 +87,10 @@ class AdminController extends Controller
         $query = $request->input('query');
 
         $results = User::whereHas('role', function ($q) {
-            $q->where('name', 'freelancer');
+            $q->where('id', '3');
         })->where(function ($q) use ($query) {
-            $q->where('name', 'like', "%$query%")
-              ->orWhere('skill', 'like', "%$query%");
+            $q->where('username', 'like', "%$query%");
+              
         })->get();
 
         return response()->json([

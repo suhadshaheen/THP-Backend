@@ -18,8 +18,6 @@ class JobFactory extends Factory
     public function definition(): array
     {
         return [
-            'attempts' => fake()->numberBetween(1, 10),
-            'available_at' => fake()->numberBetween(1, 10),
             'title' => fake()->jobTitle(),
             'description' => fake()->text(),
             'location' => fake()->address(),

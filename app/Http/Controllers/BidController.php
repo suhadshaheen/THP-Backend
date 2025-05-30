@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Bid;
 use App\Models\Job;
 use Illuminate\Support\Facades\Auth;
-//1
+
 class BidController extends Controller
 {
 
@@ -35,7 +35,7 @@ class BidController extends Controller
     if ($existingBid) {
         return response()->json([
             'message' => 'You have already placed a bid on this job.'
-        ], 409); // 409 :Conflict
+        ], 409);
     }
 
     $validated['Freelancer_id'] = $userId;

@@ -19,23 +19,18 @@ class MessageController extends Controller
         $userId = Auth::id();
 
         if ($senderId && $receiverId) {
-            $messages = Message::with(['sender.profile', 'receiver.profile'])
-                ->where(function ($q) use ($senderId, $receiverId) {
+            $messages = Message::with(['sender.profile', 'receiver.profile'])->where(function ($q) use ($senderId, $receiverId) {
                     $q->where('sender_id', $senderId)->where('receiver_id', $receiverId)
                         ->orWhere(function ($q2) use ($senderId, $receiverId) {
                             $q2->where('sender_id', $receiverId)->where('receiver_id', $senderId);
                         });
-                })
-                ->orderBy('TimeForMessage', 'asc')
-                ->get();
+                })->orderBy('TimeForMessage', 'asc')->get();
         } else {
             $messages = Message::with(['sender.profile', 'receiver.profile'])
                 ->where(function ($q) use ($userId) {
                     $q->where('sender_id', $userId)
                       ->orWhere('receiver_id', $userId);
-                })
-                ->orderBy('TimeForMessage', 'desc')
-                ->get();
+                })->orderBy('TimeForMessage', 'desc')->get();
         }
 
         $messages = $messages->map(function ($msg) use ($userId) {
@@ -132,13 +127,13 @@ $message = Message::create([
         }
 
         $targetRoleId = null;
-        if ($user->role?->name === 'Freelancer') {
+        if ($user->role?->name === 'FreeLancer') {
             $targetRole = Role::where('name', 'JobOwner')->first();
             if ($targetRole) {
                 $targetRoleId = $targetRole->id;
             }
         } elseif ($user->role?->name === 'JobOwner') {
-            $targetRole = Role::where('name', 'Freelancer')->first();
+            $targetRole = Role::where('name', 'FreeLancer')->first();
             if ($targetRole) {
                 $targetRoleId = $targetRole->id;
             }
@@ -150,31 +145,17 @@ $message = Message::create([
         }
 
 
-        $potentialContacts = User::where('role_id', $targetRoleId)
-                                 ->where('id', '!=', $userId)
-                                 ->with('profile')
-                                 ->get();
+        User::where('role_id', $targetRoleId)->where('id', '!=', $userId)->with('profile')->get();
 
-
-        $contactedUserIds = Message::where(function ($query) use ($userId) {
+        Message::where(function ($query) use ($userId) {
                 $query->where('sender_id', $userId)
                       ->orWhere('receiver_id', $userId);
-            })
-            ->pluck('sender_id', 'receiver_id')
-            ->map(function ($value, $key) use ($userId) {
+            })->pluck('sender_id', 'receiver_id')->map(function ($value, $key) use ($userId) {
                 return ($value == $userId) ? $key : $value;
-            })
-            ->unique()
-            ->values();
+            })->unique()->values();
 
 
-        $contacts = User::where('role_id', $targetRoleId)
-                        ->where('id', '!=', $userId)
-                        ->with('profile')
-                        ->orderBy('username')
-                        ->get();
-
-
+        $contacts = User::where('role_id', $targetRoleId)->where('id', '!=', $userId)->with('profile')->orderBy('username')->get();
 
         return response()->json($contacts);
     }
@@ -183,18 +164,13 @@ $message = Message::create([
         $userId = Auth::id();
 
 
-        $messages = Message::with(['sender.profile', 'receiver.profile'])
-            ->where(function ($query) use ($userId, $receiverId) {
+        $messages = Message::with(['sender.profile', 'receiver.profile'])->where(function ($query) use ($userId, $receiverId) {
                 $query->where(function ($q) use ($userId, $receiverId) {
-                    $q->where('sender_id', $userId)
-                      ->where('receiver_id', $receiverId);
+                    $q->where('sender_id', $userId)->where('receiver_id', $receiverId);
                 })->orWhere(function ($q) use ($userId, $receiverId) {
-                    $q->where('sender_id', $receiverId)
-                      ->where('receiver_id', $userId);
+                    $q->where('sender_id', $receiverId)->where('receiver_id', $userId);
                 });
-            })
-            ->orderBy('TimeForMessage', 'asc')
-            ->get();
+            })->orderBy('TimeForMessage', 'asc')->get();
 
 
         $messages = $messages->map(function ($msg) use ($userId) {

@@ -23,6 +23,8 @@ class JobController extends Controller
             'budget' => 'required|numeric',
             'attempts' => 'nullable|integer',
             'available_at' => 'nullable|date',
+            'experience' => 'nullable|string',
+            'work_level' => 'nullable|string',
         ]);
 
         $job = Job::create($validated);
@@ -50,8 +52,8 @@ class JobController extends Controller
             'job_owner_id' => 'required|exists:users,id',
             'JobPhoto' => 'nullable|string',
             'budget' => 'required|numeric',
-            'attempts' => 'nullable|integer',
-            'available_at' => 'nullable|date',
+            'experience' => 'nullable|string',
+            'work_level' => 'nullable|string',
         ]);
 
         $job->update($validated);

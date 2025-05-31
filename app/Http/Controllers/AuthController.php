@@ -46,12 +46,12 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
         $user = JWTAuth::user()->load('role');
-
 
         return response()->json([
             'access_token' => $token,
@@ -60,9 +60,9 @@ class AuthController extends Controller
             'user' => [
                 'id' => $user->id,
                 'username' => $user->username,
-                'role' => $user->role?->name ?? null
-            ]
-        ]);
+                'role' => $user->role?->name ?? null,
+
+        ]]);
     }
     public function logout()
     {

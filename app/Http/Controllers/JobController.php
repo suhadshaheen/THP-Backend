@@ -21,8 +21,6 @@ class JobController extends Controller
             'job_owner_id' => 'required|exists:users,id',
             'JobPhoto' => 'nullable|string',
             'budget' => 'required|numeric',
-            'attempts' => 'nullable|integer',
-            'available_at' => 'nullable|date',
             'experience' => 'nullable|string',
             'work_level' => 'nullable|string',
         ]);
@@ -30,7 +28,7 @@ class JobController extends Controller
         $job = Job::create($validated);
 
         return response()->json($job, 201);
-    } 
+    }
 
 
     public function update(Request $request, $id)
@@ -60,7 +58,7 @@ class JobController extends Controller
 
         return response()->json($job);
     }
-  
+
 
     public function destroy($id)
     {

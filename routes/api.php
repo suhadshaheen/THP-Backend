@@ -36,11 +36,12 @@ Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
 //job owner
 Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::delete('/bids/{id}', [BidController::class, 'destroy']);
-
+    Route::get('/my-jobs', [JobController::class, 'myJobs']);
     Route::post('/jobs', [JobController::class, 'store']);
     Route::put('/jobs/{id}', [JobController::class, 'update']);
     Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);
-     Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+    Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
+    Route::put('/bids/{id}/status', [BidController::class, 'changeStatus']);
 });
 
 //admin

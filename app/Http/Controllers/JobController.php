@@ -114,6 +114,13 @@ class JobController extends Controller
         return response()->json($job);
     }
 
+    public function myJobs(Request $request)
+    {
+        $user = $request->user(); 
+        $jobs = Job::where('job_owner_id', $user->id)->get();
+        return response()->json($jobs);
+    }
+
     public function updateStatus(Request $request, $id)
     {
         $job = Job::find($id);

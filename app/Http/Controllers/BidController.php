@@ -40,6 +40,7 @@ class BidController extends Controller
 
     $validated['Freelancer_id'] = $userId;
 
+     $validated['Bid_Date'] = now();
     $bid = Bid::create($validated);
 
     return response()->json($bid, 201);
@@ -98,19 +99,43 @@ class BidController extends Controller
         return response()->json(['message' => 'Bid deleted']);
     }
 
-
     public function getBidsForJob($jobId)
     {
         $job = Job::find($jobId);
         if (!$job) {
             return response()->json(['message' => 'Job not found'], 404);
         }
-        if ($job->user_id != Auth::user()->id) {
+
+        if ($job->job_owner_id != Auth::id()) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
 
-        $bids = Bid::where('job_id', $jobId)->get();
+        $bids = Bid::with('freelancer')->where('job_id', $jobId)->get();
 
         return response()->json($bids);
     }
+
+
+    public function changeStatus(Request $request, $id)
+    {
+        $bid = Bid::find($id);
+        if (!$bid) {
+            return response()->json(['message' => 'Bid not found'], 404);
+        }
+        $jobOwnerId = $bid->job->job_owner_id;
+
+        if (Auth::id() !== $jobOwnerId) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+        $validated = $request->validate([
+            'status' => 'required|in:accepted,rejected',
+        ]);
+
+        $bid->status = $validated['status'];
+        $bid->save();
+        return response()->json(['message' => 'Bid status updated', 'bid' => $bid]);
+    }
+
+   
+
 }

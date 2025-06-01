@@ -47,9 +47,7 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
 //admin
 Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
     Route::delete('/admin/artisans/{id}', [AdminController::class, 'destroy']);
-    Route::get('/admin/dashboard/summary', [AdminController::class, 'dashboardSummary']);
-    Route::get('/admin/dashboard/recent-jobs', [AdminController::class, 'getRecentJobs']);
-    Route::get('/admin/dashboard/recent-artisans', [AdminController::class, 'getRecentArtisans']);
+   
     Route::get('/admin/artisans', [AdminController::class, 'index']);
     Route::put('/admin/artisans/{id}/status', [AdminController::class, 'updateStatus']);
     Route::delete('/admin/artisans/{id}', [AdminController::class, 'destroy']);

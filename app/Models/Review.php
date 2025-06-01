@@ -11,6 +11,8 @@ class Review extends Model
     protected $fillable = [
         'bid_id',
         'reviewer_id',
+        'job_id',
+        'freelancer_id',
         'rating',
         'review_text',
     ];
@@ -23,4 +25,14 @@ class Review extends Model
     {
         return $this->belongsTo(User::class, 'reviewer_id');
     }
+    public function job()
+    {
+        return $this->belongsTo(Job::class, 'job_id');
+    }
+
+    public function freelancer()
+    {
+        return $this->belongsTo(User::class, 'freelancer_id');
+    }
+
 }

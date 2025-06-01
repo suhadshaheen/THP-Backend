@@ -19,6 +19,7 @@ class Job extends Model
         'deadline',
         'posting_date',
         'job_owner_id',
+        'assigned_to',
         'JobPhoto',
         'budget',
         'experience',   

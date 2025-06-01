@@ -121,20 +121,37 @@ class JobController extends Controller
         return response()->json($jobs);
     }
 
-    public function updateStatus(Request $request, $id)
-    {
-        $job = Job::find($id);
-        if (!$job) {
-            return response()->json(['message' => 'Job not found'], 404);
-        }
+    // public function updateStatus(Request $request, $id)
+    // {
+    //     $job = Job::find($id);
+    //     if (!$job) {
+    //         return response()->json(['message' => 'Job not found'], 404);
+    //     }
 
-        $request->validate([
-            'status' => 'required|in:pending,in_progress,completed',
-        ]);
+    //     $request->validate([
+    //         'status' => 'required|in:pending,in_progress,completed',
+    //     ]);
 
-        $job->status = $request->status;
-        $job->save();
+    //     $job->status = $request->status;
+    //     $job->save();
 
-        return response()->json($job);
+    //     return response()->json($job);
+    // }
+public function updateStatus(Request $request, $id)
+{
+    $job = Job::find($id);
+    if (!$job) {
+        return response()->json(['message' => 'Job not found'], 404);
     }
+
+    $request->validate([
+        'status' => 'required|in:pending,in_progress,completed',
+    ]);
+
+    $job->status = $request->status;
+    $job->save();
+
+    return response()->json($job);
+}
+
 }

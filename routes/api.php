@@ -10,6 +10,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
 
 
 
@@ -29,8 +30,6 @@ Route::get('/user', function (Request $request) {
 Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
     Route::post('/bids', [BidController::class, 'store']);
     Route::get('/bids', [BidController::class, 'index']);
-
-
 });
 
 //job owner
@@ -42,6 +41,9 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::get('/jobs/{jobId}/bids', [BidController::class, 'getBidsForJob']);
     Route::put('/jobs/{id}/status', [JobController::class, 'updateStatus']);
     Route::put('/bids/{id}/status', [BidController::class, 'changeStatus']);
+    Route::post('/reviews', [ReviewController::class, 'store']);
+    Route::get('/reviews/bid/{bidId}', [ReviewController::class, 'showByBid']);
+
 });
 
 //admin
@@ -66,10 +68,10 @@ Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
 Route::get('/jobs', [JobController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login',[AuthController::class, 'login']);
- Route::get('/jobs/{id}', [JobController::class, 'show']);
+Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-
+Route::get('/freelancer-ratings/{freelancerId}', [UserController::class, 'getFreelancerRating']);
 
 //
 Route::middleware('auth:api')->group(function () {

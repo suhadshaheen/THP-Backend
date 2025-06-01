@@ -9,32 +9,6 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function dashboardSummary()
-    {
-        return response()->json([
-            'job_requests' => \App\Models\Job::count(),
-            'approved_artisans' => User::whereHas('role', function ($query) {
-                $query->where('id', '3');
-            })->where('status', 'approved')->count(),
-            'platform_earnings' => 12340,
-            'site_visits' => 3200,
-        ]);
-    }
-
-    // tables
-    public function getRecentJobs()
-    {
-        return response()->json(Job::latest()->take(5)->get());
-    }
-
-    public function getRecentArtisans()
-    {
-        $recentArtisans = User::whereHas('role', function ($query) {
-            $query->where('id', '3');
-        })->latest()->take(5)->get();
-
-        return response()->json($recentArtisans);
-    }
 
     // artisans
     public function index()

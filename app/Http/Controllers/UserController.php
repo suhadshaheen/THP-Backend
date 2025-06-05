@@ -63,5 +63,28 @@ class UserController extends Controller
     {
         return 'username';
     }
+    public function getFreelancerRating($freelancerId)
+    {
+        $user = User::find($freelancerId);
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found.'], 404);
+        }
+
+        $ratings = $user->reviewsReceived()->pluck('rating');
+
+        if ($ratings->isEmpty()) {
+            return response()->json([
+                'averageRating' => 0,
+                'ratingCount' => 0
+            ]);
+        }
+
+        return response()->json([
+            'averageRating' => round($ratings->avg(), 1),
+            'ratingCount' => $ratings->count()
+        ]);
+    }
+
 
 }

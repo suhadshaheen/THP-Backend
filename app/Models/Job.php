@@ -22,8 +22,8 @@ class Job extends Model
         'assigned_to',
         'JobPhoto',
         'budget',
-        'experience',   
-        'work_level',     
+        'experience',
+        'work_level',
     ];
 
     public function user()
@@ -34,5 +34,9 @@ class Job extends Model
     public function bids()
     {
         return $this->hasMany(Bid::class);
+    }
+     public function jobOwner()
+    {
+        return $this->belongsTo(User::class, 'job_owner_id');
     }
 }

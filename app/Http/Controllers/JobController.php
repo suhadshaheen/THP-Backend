@@ -75,7 +75,7 @@ class JobController extends Controller
  public function index(Request $request)
 {
     $query = Job::query();
-
+ $query->with('jobOwner.profile');
     $query->whereIn('status', ['pending', 'in_progress']);
 
     if ($request->filled('category')) {
@@ -108,6 +108,7 @@ class JobController extends Controller
     public function show($id)
     {
         $job = Job::find($id);
+         $job = Job::with('jobOwner.profile')->find($id);
         if (!$job) {
             return response()->json(['message' => 'Job not found'], 404);
         }

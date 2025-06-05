@@ -6,13 +6,13 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use App\Models\Role;;
+use App\Models\Role;
 use Tymon\JWTAuth\Facades\JWTAuth;
+
 class MessageController extends Controller
 {
 
-
-   public function index(Request $request)
+    public function index(Request $request)
     {
         $senderId = $request->query('sender_id');
         $receiverId = $request->query('receiver_id');
@@ -20,12 +20,13 @@ class MessageController extends Controller
 
         if ($senderId && $receiverId) {
             $messages = Message::with(['sender.profile', 'receiver.profile'])->where(function ($q) use ($senderId, $receiverId) {
-                    $q->where('sender_id', $senderId)->where('receiver_id', $receiverId)
-                        ->orWhere(function ($q2) use ($senderId, $receiverId) {
-                            $q2->where('sender_id', $receiverId)->where('receiver_id', $senderId);
-                        });
-                })->orderBy('TimeForMessage', 'asc')->get();
+                        $q->where('sender_id', $senderId)->where('receiver_id', $receiverId)
+                            ->orWhere(function ($q2) use ($senderId, $receiverId) {
+                                $q2->where('sender_id', $receiverId)->where('receiver_id', $senderId);
+                            });
+                    })->orderBy('TimeForMessage', 'asc')->get();
         } else {
+
             $messages = Message::with(['sender.profile', 'receiver.profile'])
                 ->where(function ($q) use ($userId) {
                     $q->where('sender_id', $userId)
@@ -47,16 +48,16 @@ class MessageController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-    'receiver_id' => 'required|exists:users,id',
-    'content' => 'required|string',
-]);
+            'receiver_id' => 'required|exists:users,id',
+            'content' => 'required|string',
+        ]);
 
-$message = Message::create([
-    'sender_id' => $userId,
-    'receiver_id' => $validated['receiver_id'],
-    'content' => $validated['content'],
-    'TimeForMessage' => now(),
-]);
+        $message = Message::create([
+            'sender_id' => $userId,
+            'receiver_id' => $validated['receiver_id'],
+            'content' => $validated['content'],
+            'TimeForMessage' => now(),
+        ]);
 
         return response()->json($message, 201);
     }
@@ -78,46 +79,7 @@ $message = Message::create([
     }
 
 
-    // public function update(Request $request, $id)
-    // {
-    //     $message = Message::find($id);
-    //     if (!$message) {
-    //         return response()->json(['message' => 'Message not found'], 404);
-    //     }
-
-
-    //     if ($message->sender_id != Auth::id()) {
-    //         return response()->json(['message' => 'Unauthorized'], 403);
-    //     }
-
-    //     $validated = $request->validate([
-    //         'content' => 'sometimes|string',
-    //         'TimeForMessage' => 'sometimes|date',
-    //     ]);
-
-    //     $message->update($validated);
-    //     return response()->json($message);
-    // }
-
-
-    // public function destroy($id)
-    // {
-    //     $message = Message::find($id);
-    //     if (!$message) {
-    //         return response()->json(['message' => 'Message not found'], 404);
-    //     }
-
-    //     $userId = Auth::id();
-    //     if ($message->sender_id != $userId && $message->receiver_id != $userId) {
-    //         return response()->json(['message' => 'Unauthorized'], 403);
-    //     }
-
-    //     $message->delete();
-    //     return response()->json(['message' => 'Message deleted']);
-    // }
-
-
-  public function recentContacts()
+    public function recentContacts()
     {
         $userId = Auth::id();
         $user = JWTAuth::user()->load('role');
@@ -140,29 +102,19 @@ $message = Message::create([
         }
 
         if (!$targetRoleId) {
-
             return response()->json([]);
         }
-
-
-        User::where('role_id', $targetRoleId)->where('id', '!=', $userId)->with('profile')->get();
-
-        Message::where(function ($query) use ($userId) {
-                $query->where('sender_id', $userId)
-                      ->orWhere('receiver_id', $userId);
-            })->pluck('sender_id', 'receiver_id')->map(function ($value, $key) use ($userId) {
-                return ($value == $userId) ? $key : $value;
-            })->unique()->values();
 
 
         $contacts = User::where('role_id', $targetRoleId)->where('id', '!=', $userId)->with('profile')->orderBy('username')->get();
 
         return response()->json($contacts);
     }
-     public function getConversationMessages($receiverId)
+
+
+    public function getConversationMessages($receiverId)
     {
         $userId = Auth::id();
-
 
         $messages = Message::with(['sender.profile', 'receiver.profile'])->where(function ($query) use ($userId, $receiverId) {
                 $query->where(function ($q) use ($userId, $receiverId) {
@@ -172,13 +124,11 @@ $message = Message::create([
                 });
             })->orderBy('TimeForMessage', 'asc')->get();
 
-
         $messages = $messages->map(function ($msg) use ($userId) {
-            $msg->from = $msg->sender_id == $userId ? 'me' : 'owner';
+            $msg->from = $msg->sender_id == $userId ? 'me' : 'other';
             return $msg;
         });
 
         return response()->json($messages);
     }
-
 }

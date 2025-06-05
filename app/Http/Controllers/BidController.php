@@ -28,6 +28,7 @@ class BidController extends Controller
         'bid_amount' => 'required|integer|min:1',
         'work_time_line' => 'required|string',
         'status' => 'in:pending,accepted,rejected'
+
     ]);
 //ممنوع اكثر من بيد
     $existingBid = Bid::where('Freelancer_id', $userId)->where('job_id', $validated['job_id'])->first();
@@ -40,7 +41,6 @@ class BidController extends Controller
 
     $validated['Freelancer_id'] = $userId;
 
-     $validated['Bid_Date'] = now();
     $bid = Bid::create($validated);
 
     return response()->json($bid, 201);
@@ -136,6 +136,6 @@ class BidController extends Controller
         return response()->json(['message' => 'Bid status updated', 'bid' => $bid]);
     }
 
-   
+
 
 }

@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
 
-            $table->string('firstname')->after('id');
-            $table->string('lastname')->after('firstname');
-            $table->string('city')->nullable()->after('phone');
-            $table->string('country')->nullable()->after('city');
+            // $table->string('firstname')->after('id');
+            // $table->string('lastname')->after('firstname');
+            // $table->string('city')->nullable()->after('phone');
+            // $table->string('country')->nullable()->after('city');
             $table->renameColumn('UserName', 'username');
-            $table->dropColumn(['name', 'Address']);
+            // $table->dropColumn(['name', 'Address']);
         });
     }
 

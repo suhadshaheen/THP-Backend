@@ -33,6 +33,8 @@ class JobFactory extends Factory
             'status' => fake()->randomElement(['pending', 'in_progress', 'completed']),
             'JobPhoto' => fake()->imageUrl(640, 480, 'business', true),
             'budget' => fake()->numberBetween(100, 2000),
+            'experience'=> fake()->text(),
+            'work_level'=> fake()->text(),
         ];
     }
 }

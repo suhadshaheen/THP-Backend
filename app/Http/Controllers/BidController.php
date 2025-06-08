@@ -13,7 +13,7 @@ class BidController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-        $bids = Bid::with('job')->where('Freelancer_id', $userId)->get();
+        $bids = Bid::with('job')->where('Freelancer_id', $userId)->orderBy('created_at', 'desc')->get();
 
 
         return response()->json($bids);
@@ -30,7 +30,6 @@ class BidController extends Controller
         'status' => 'in:pending,accepted,rejected'
 
     ]);
-//ممنوع اكثر من بيد
     $existingBid = Bid::where('Freelancer_id', $userId)->where('job_id', $validated['job_id'])->first();
 
     if ($existingBid) {

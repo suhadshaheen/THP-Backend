@@ -11,7 +11,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class MessageController extends Controller
 {
-
     public function index(Request $request)
     {
         $senderId = $request->query('sender_id');
@@ -20,13 +19,12 @@ class MessageController extends Controller
 
         if ($senderId && $receiverId) {
             $messages = Message::with(['sender.profile', 'receiver.profile'])->where(function ($q) use ($senderId, $receiverId) {
-                        $q->where('sender_id', $senderId)->where('receiver_id', $receiverId)
-                            ->orWhere(function ($q2) use ($senderId, $receiverId) {
-                                $q2->where('sender_id', $receiverId)->where('receiver_id', $senderId);
-                            });
-                    })->orderBy('TimeForMessage', 'asc')->get();
+                                $q->where('sender_id', $senderId)->where('receiver_id', $receiverId)
+                                    ->orWhere(function ($q2) use ($senderId, $receiverId) {
+                                        $q2->where('sender_id', $receiverId)->where('receiver_id', $senderId);
+                                    });
+                            })->orderBy('TimeForMessage', 'asc')->get();
         } else {
-
             $messages = Message::with(['sender.profile', 'receiver.profile'])
                 ->where(function ($q) use ($userId) {
                     $q->where('sender_id', $userId)
@@ -41,7 +39,6 @@ class MessageController extends Controller
 
         return response()->json($messages);
     }
-
 
     public function store(Request $request)
     {
@@ -62,7 +59,6 @@ class MessageController extends Controller
         return response()->json($message, 201);
     }
 
-
     public function show($id)
     {
         $message = Message::find($id);
@@ -77,7 +73,6 @@ class MessageController extends Controller
 
         return response()->json($message);
     }
-
 
     public function recentContacts()
     {
@@ -105,12 +100,26 @@ class MessageController extends Controller
             return response()->json([]);
         }
 
+        $contactIds = Message::where('sender_id', $userId)
+            ->orWhere('receiver_id', $userId)
+            ->get(['sender_id', 'receiver_id'])
+            ->map(function ($message) use ($userId) {
+                return ($message->sender_id == $userId) ? $message->receiver_id : $message->sender_id;
+            })
+            ->unique()
+            ->values()
+            ->reject(function ($id) use ($userId) {
+                return $id == $userId;
+            });
 
-        $contacts = User::where('role_id', $targetRoleId)->where('id', '!=', $userId)->with('profile')->orderBy('username')->get();
+        $contacts = User::whereIn('id', $contactIds)
+            ->where('role_id', $targetRoleId)
+            ->with('profile')
+            ->orderBy('username')
+            ->get();
 
         return response()->json($contacts);
     }
-
 
     public function getConversationMessages($receiverId)
     {

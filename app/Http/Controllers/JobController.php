@@ -100,7 +100,7 @@ class JobController extends Controller
         });
     }
 
-    $jobs = $query->get();
+    $jobs = $query->orderBy('created_at', 'desc')->get();
 
     return response()->json($jobs);
 }

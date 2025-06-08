@@ -11,7 +11,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
-
+use App\Http\Controllers\JobPhotoController;
 
 
 Route::get('/user', function (Request $request) {
@@ -43,7 +43,8 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
     Route::put('/bids/{id}/status', [BidController::class, 'changeStatus']);
     Route::post('/reviews', [ReviewController::class, 'store']);
     Route::get('/reviews/bid/{bidId}', [ReviewController::class, 'showByBid']);
-
+    Route::post('/job-photos', [JobPhotoController::class, 'store']);
+    Route::delete('/job-photos/{id}', [JobPhotoController::class, 'destroy']);
 });
 
 //admin
@@ -69,7 +70,7 @@ Route::post('/login',[AuthController::class, 'login']);
 Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
-Route::get('/freelancer-ratings/{freelancerId}', [UserController::class, 'getFreelancerRating']);
+Route::get('/freelancer-ratings/{freelancerId}', [ReviewController::class, 'getFreelancerRating']);
 
 //
 Route::middleware('auth:api')->group(function () {
@@ -95,8 +96,9 @@ Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
     Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
     Route::get('/messages/conversation/{receiver_id}', [MessageController::class, 'getConversationMessages']); // j,f
-   Route::get('/messages/Contact', [MessageController::class, 'recentContacts']); // j,f
-   Route::get('/messages/{id}', [MessageController::class, 'show']); // j,f
+    Route::get('/messages/Contact', [MessageController::class, 'recentContacts']); // j,f
+    Route::get('/messages/{id}', [MessageController::class, 'show']); // j,f
+    Route::get('/job-photos/job/{jobId}', [JobPhotoController::class, 'index']);
 
 
 });

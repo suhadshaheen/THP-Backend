@@ -20,7 +20,6 @@ class Job extends Model
         'posting_date',
         'job_owner_id',
         'assigned_to',
-        'JobPhoto',
         'budget',
         'experience',
         'work_level',
@@ -39,4 +38,9 @@ class Job extends Model
     {
         return $this->belongsTo(User::class, 'job_owner_id');
     }
+    public function photos()
+    {
+        return $this->hasMany(JobPhoto::class);
+    }
+
 }

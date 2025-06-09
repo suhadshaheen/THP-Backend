@@ -31,7 +31,6 @@ class MessageController extends Controller
     return response()->json($message, 201);
 }
 
-    //هون + html
     public function recentContacts()
     {
        $user = JWTAuth::user()->load('role');

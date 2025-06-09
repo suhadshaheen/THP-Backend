@@ -18,7 +18,7 @@ class UserController extends Controller
         if(!$user){
             return response()->json(['message' => 'User not found.'], 404);
         }
-        $user->load('profile');//suhad
+        $user->load('profile','role');//suhad
         return response()->json($user);
     }
     public function update(Request $request,$id){

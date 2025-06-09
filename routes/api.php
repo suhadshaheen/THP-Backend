@@ -50,7 +50,7 @@ Route::middleware(['auth:api','role:JobOwner'])->group(function () {
 //admin
 Route::middleware(['auth:api' , 'role:Admin'])->group(function () {
     Route::delete('/admin/artisans/{id}', [AdminController::class, 'destroy']);
-   
+
     Route::get('/admin/artisans', [AdminController::class, 'index']);
     Route::put('/admin/artisans/{id}/status', [AdminController::class, 'updateStatus']);
     Route::delete('/admin/artisans/{id}', [AdminController::class, 'destroy']);
@@ -71,6 +71,8 @@ Route::get('/jobs/{id}', [JobController::class, 'show']);
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 Route::get('/freelancer-ratings/{freelancerId}', [ReviewController::class, 'getFreelancerRating']);
+Route::get('/top-artisans', [ReviewController::class, 'topRated']);
+
 
 //
 Route::middleware('auth:api')->group(function () {

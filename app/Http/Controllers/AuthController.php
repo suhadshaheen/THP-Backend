@@ -61,6 +61,8 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'username' => $user->username,
                 'role' => $user->role?->name ?? null,
+                'role_id' => $user->role_id,
+
 
         ]]);
     }
@@ -82,6 +84,7 @@ class AuthController extends Controller
         }
         $user->load('profile');//suhad
         $user->load('role');
+
 
         return response()->json($user);
     }

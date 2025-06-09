@@ -14,7 +14,8 @@ class AdminController extends Controller
     public function index()
     {
         $artisans = User::whereHas('role', function ($query) {
-            $query->where('id', '3');
+            $query->where('id', '2')
+            ->orWhere('id', '3');
         })->get();
 
         return response()->json([
@@ -30,7 +31,8 @@ class AdminController extends Controller
         ]);
 
         $artisan = User::whereHas('role', function ($query) {
-            $query->where('id', '3');
+            $query->where('id', '2')
+            ->orWhere('id', '3');
         })->findOrFail($id);
 
         $artisan->status = $request->status;
@@ -45,7 +47,8 @@ class AdminController extends Controller
     public function destroy($id)
     {
         $artisan = User::whereHas('role', function ($query) {
-            $query->where('id', '3');
+            $query->where('id', '2')
+            ->orWhere('id', '3');
         })->findOrFail($id);
 
         $artisan->delete();
@@ -61,7 +64,8 @@ class AdminController extends Controller
         $query = $request->input('query');
 
         $results = User::whereHas('role', function ($q) {
-            $q->where('id', '3');
+            $query->where('id', '2')
+            ->orWhere('id', '3');
         })->where(function ($q) use ($query) {
             $q->where('username', 'like', "%$query%");
               

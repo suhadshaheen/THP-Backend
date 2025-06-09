@@ -65,5 +65,34 @@ public function store(Request $request)
             'rating_count' => $count
         ]);
     }
+    public function topRated()
+    {
+        $topFreelancers = Review::with('freelancer')
+            ->selectRaw('freelancer_id, AVG(rating) as avg_rating, COUNT(*) as total_reviews')
+            ->groupBy('freelancer_id')
+            ->orderByDesc('avg_rating')
+            ->take(3)
+            ->get();
+
+        $data = $topFreelancers->map(function ($item) {
+            $latestReview = Review::where('freelancer_id', $item->freelancer_id)
+                ->latest()
+                ->with('reviewer')
+                ->first();
+
+            return [
+                'freelancer_id' => $item->freelancer_id,
+                'name' => $item->freelancer?->username ?? 'Unknown',
+                'rating' => round($item->avg_rating, 1),
+                'total_reviews' => $item->total_reviews,
+                'comment' => $latestReview?->review_text,
+                'date' => $latestReview?->created_at?->toDateString(),
+                'client' => $latestReview?->reviewer?->name ?? null,
+            ];
+        });
+
+        return response()->json($data);
+    }
+
 
 }

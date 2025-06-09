@@ -40,9 +40,30 @@ public function store(Request $request)
         $review = Review::where('bid_id', $bidId)->first();
 
         if (!$review) {
-            return response()->json(['message' => 'لا يوجد تقييم لهذا العرض'], 404);
+            return response()->json(['message' => 'There is no rating for this bid'], 404);
         }
 
         return response()->json($review);
     }
+
+    public function getFreelancerRating($freelancerId)
+    {
+        $reviews = Review::where('freelancer_id', $freelancerId)->get();
+
+        if ($reviews->isEmpty()) {
+            return response()->json([
+                'average_rating' => null,
+                'rating_count' => 0
+            ]);
+        }
+
+        $average = round($reviews->avg('rating'), 1);
+        $count = $reviews->count();
+
+        return response()->json([
+            'average_rating' => $average,
+            'rating_count' => $count
+        ]);
+    }
+
 }

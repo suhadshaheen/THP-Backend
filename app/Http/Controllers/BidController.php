@@ -58,27 +58,6 @@ class BidController extends Controller
         return response()->json($bid);
     }
 
-    public function update(Request $request, string $id)
-    {
-        $bid = Bid::find($id);
-        if (!$bid) {
-            return response()->json(['message' => 'Bid not found'], 404);
-        }
-
-        if ($bid->Freelancer_id != Auth::user()->id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
-        $validated = $request->validate([
-            'bid_amount' => 'sometimes|integer|min:1',
-            'work_time_line' => 'sometimes|string',
-            'status' => 'sometimes|in:pending,accepted,rejected'
-        ]);
-
-        $bid->update($validated);
-
-        return response()->json($bid);
-    }
 
     public function destroy(Request $request, $id)
     {

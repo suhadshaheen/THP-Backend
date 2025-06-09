@@ -18,14 +18,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-//edit
-//Route::get('/role', [RoleController::class, 'index']);
-//Route::get('/role/{id}', [RoleController::class, 'show']);
-//Route::get('/bids/{id}', [BidController::class, 'show']);
-//Route::put('/bids/{id}', [BidController::class, 'update']);
-//Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
-//Route::put('/messages/{id}', [MessageController::class, 'update']);
-
 //freelancer
 Route::middleware(['auth:api','role:FreeLancer'])->group(function () {
     Route::post('/bids', [BidController::class, 'store']);

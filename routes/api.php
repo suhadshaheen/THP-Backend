@@ -95,11 +95,9 @@ Route::middleware('auth:api')->group(function () {
 
 //Job owner, freelancer
 Route::middleware(['auth:api','role:JobOwner,FreeLancer'])->group(function () {
-    Route::get('/messages', [MessageController::class, 'index']);//j,f
     Route::post('/messages', [MessageController::class, 'store']);//j,f
     Route::get('/messages/conversation/{receiver_id}', [MessageController::class, 'getConversationMessages']); // j,f
     Route::get('/messages/Contact', [MessageController::class, 'recentContacts']); // j,f
-    Route::get('/messages/{id}', [MessageController::class, 'show']); // j,f
     Route::get('/job-photos/job/{jobId}', [JobPhotoController::class, 'index']);
 
 

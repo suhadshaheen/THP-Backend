@@ -79,26 +79,20 @@ $userId = $user->id;
         return response()->json($contacts);
     }
 
-    public function getConversationMessages($receiverId)
+ public function getConversationMessages($receiverId)
     {
         $user = JWTAuth::user();
-$userId = $user->id;
+        $userId = $user->id;
+    $messages = Message::with(['sender.profile', 'receiver.profile'])
+    ->betweenUsers($userId, $receiverId)
+    ->orderBy('TimeForMessage', 'asc')
+    ->get()
+    ->map(function ($msg) use ($userId) {
+        $msg->from = $msg->sender_id == $userId ? 'me' : 'other';
+        return $msg;
+    });
+        return response()->json($messages);
+    }
 
-$messages = Message::with(['sender.profile', 'receiver.profile'])
-    ->where(function ($query) use ($userId, $receiverId) {
-        $query->where(function ($q) use ($userId, $receiverId) {
-            $q->where('sender_id', $userId)->where('receiver_id', $receiverId);
-        })->orWhere(function ($q) use ($userId, $receiverId) {
-            $q->where('sender_id', $receiverId)->where('receiver_id', $userId);
-        });
-    })->orderBy('TimeForMessage', 'asc')->get();
 
-$messages = $messages->map(function ($msg) use ($userId) {
-    $msg->from = $msg->sender_id == $userId ? 'me' : 'other';
-    return $msg;
-});
-
-return response()->json($messages);
-
-}
 }

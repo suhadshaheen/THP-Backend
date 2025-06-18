@@ -23,5 +23,12 @@ class Message extends Model
         'content',
         'TimeForMessage',
     ];
-
+public function scopeBetweenUsers($query, $user1, $user2)
+{
+    return $query->where(function ($q) use ($user1, $user2) {
+        $q->where('sender_id', $user1)->where('receiver_id', $user2);
+    })->orWhere(function ($q) use ($user1, $user2) {
+        $q->where('sender_id', $user2)->where('receiver_id', $user1);
+    });
+}
 }
